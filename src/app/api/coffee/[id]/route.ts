@@ -47,7 +47,7 @@ export async function PUT(
     const body = await request.json();
     
     // Validate the request body
-    if (body.rating && (body.rating < 1 || body.rating > 5)) {
+    if (body.rating !== undefined && (body.rating < 1 || body.rating > 5)) {
       return NextResponse.json(
         { error: 'Rating must be between 1 and 5' },
         { status: 400 }
