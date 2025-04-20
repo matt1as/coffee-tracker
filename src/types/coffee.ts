@@ -5,6 +5,9 @@ export interface CoffeeIntake {
   timestamp: string;
   amount: number;
   unit: Unit;
+  // Adding new optional fields
+  rating?: number; // Rating from 1-5
+  location?: string; // Where the coffee was consumed
 }
 
 export interface CoffeeEntry extends CoffeeIntake {

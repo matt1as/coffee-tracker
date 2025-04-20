@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import {
   Container,
   Paper,
@@ -17,7 +18,9 @@ import {
   List,
   ListItem,
   ListItemText,
+  ListItemButton,
   Divider,
+  Rating as MuiRating,
 } from '@mui/material';
 import type { MeasurementSystem, Unit, CoffeeEntry } from '../types/coffee';
 
@@ -26,6 +29,8 @@ export default function Home() {
   const [unit, setUnit] = useState<Unit>('cups');
   const [measurementSystem, setMeasurementSystem] = useState<MeasurementSystem>('metric');
   const [entries, setEntries] = useState<CoffeeEntry[]>([]);
+  const [rating, setRating] = useState<number | null>(null);
+  const [location, setLocation] = useState<string>('');
 
   useEffect(() => {
     fetchEntries();
@@ -49,6 +54,9 @@ export default function Home() {
       timestamp: new Date().toISOString(),
       amount: parseFloat(amount),
       unit,
+      // Include optional fields only if they have values
+      ...(rating !== null && { rating }),
+      ...(location && { location }),
     };
 
     try {
@@ -62,6 +70,8 @@ export default function Home() {
 
       if (response.ok) {
         setAmount('');
+        setRating(null);
+        setLocation('');
         fetchEntries();
       }
     } catch (error) {
@@ -125,6 +135,30 @@ export default function Home() {
             </FormControl>
           </Box>
 
+          {/* New fields for rating and location */}
+          <Box sx={{ mb: 3 }}>
+            <TextField
+              label="Location (optional)"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              fullWidth
+              placeholder="Where did you have this coffee?"
+              sx={{ mb: 2 }}
+            />
+            
+            <Typography component="legend" sx={{ mt: 1 }}>
+              Rating (optional)
+            </Typography>
+            <MuiRating
+              name="coffee-rating"
+              value={rating}
+              onChange={(_, newValue) => {
+                setRating(newValue);
+              }}
+              sx={{ mt: 0.5 }}
+            />
+          </Box>
+
           <Button
             variant="contained"
             onClick={handleAddCoffee}
@@ -142,12 +176,32 @@ export default function Home() {
           <List>
             {entries.map((entry, index) => (
               <Box key={entry.timestamp}>
-                <ListItem>
+                <ListItemButton component={Link} href={`/coffee/${entry.timestamp}`}>
                   <ListItemText
-                    primary={formatAmount(entry.amount, entry.unit)}
-                    secondary={formatDate(entry.timestamp)}
+                    primary={
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Box>
+                          {formatAmount(entry.amount, entry.unit)}
+                        </Box>
+                        {entry.rating && (
+                          <Box>
+                            <MuiRating value={entry.rating} readOnly size="small" />
+                          </Box>
+                        )}
+                      </Box>
+                    }
+                    secondary={
+                      <>
+                        {formatDate(entry.timestamp)}
+                        {entry.location && (
+                          <Typography variant="body2" component="span" display="block">
+                            Location: {entry.location}
+                          </Typography>
+                        )}
+                      </>
+                    }
                   />
-                </ListItem>
+                </ListItemButton>
                 {index < entries.length - 1 && <Divider />}
               </Box>
             ))}
