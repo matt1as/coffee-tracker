@@ -1,0 +1,33 @@
+{
+  "common": {
+    "appTitle": "Koffie Tracker",
+    "save": "Wijzigingen opslaan",
+    "back": "Terug",
+    "saving": "Opslaan...",
+    "language": "Taal",
+    "optional": "optioneel"
+  },
+  "home": {
+    "title": "Koffie Tracker",
+    "subtitle": "Volg je koffieconsumptie",
+    "addCoffee": "Koffie toevoegen",
+    "noCoffee": "Nog geen koffie-invoer. Voeg er een toe!",
+    "totalToday": "Totaal vandaag:",
+    "amountLabel": "Hoeveelheid",
+    "unitLabel": "Eenheid",
+    "recentEntries": "Recente invoer"
+  },
+  "details": {
+    "title": "Koffiedetails",
+    "location": "Locatie",
+    "locationPlaceholder": "Waar heb je deze koffie gedronken?",
+    "rating": "Beoordeling",
+    "backHome": "Terug naar begin"
+  },
+  "notifications": {
+    "updateSuccess": "Koffie-invoer succesvol bijgewerkt",
+    "updateError": "Kon koffie-invoer niet bijwerken",
+    "loadError": "Kon koffie-invoer niet laden",
+    "notFound": "Koffie-invoer niet gevonden"
+  }
+}

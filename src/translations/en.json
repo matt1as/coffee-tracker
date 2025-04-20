@@ -1,0 +1,33 @@
+{
+  "common": {
+    "appTitle": "Coffee Tracker",
+    "save": "Save Changes",
+    "back": "Back",
+    "saving": "Saving...",
+    "language": "Language",
+    "optional": "optional"
+  },
+  "home": {
+    "title": "Coffee Tracker",
+    "subtitle": "Track your coffee consumption",
+    "addCoffee": "Add Coffee",
+    "noCoffee": "No coffee entries yet. Add one!",
+    "totalToday": "Total Today:",
+    "amountLabel": "Amount",
+    "unitLabel": "Unit",
+    "recentEntries": "Recent Entries"
+  },
+  "details": {
+    "title": "Coffee Details",
+    "location": "Location",
+    "locationPlaceholder": "Where did you have this coffee?",
+    "rating": "Rating",
+    "backHome": "Back to Home"
+  },
+  "notifications": {
+    "updateSuccess": "Coffee entry updated successfully",
+    "updateError": "Failed to update coffee entry",
+    "loadError": "Failed to load coffee entry",
+    "notFound": "Coffee entry not found"
+  }
+}

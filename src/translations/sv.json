@@ -1,0 +1,33 @@
+{
+  "common": {
+    "appTitle": "Kafferäknare",
+    "save": "Spara ändringar",
+    "back": "Tillbaka",
+    "saving": "Sparar...",
+    "language": "Språk",
+    "optional": "valfri"
+  },
+  "home": {
+    "title": "Kafferäknare",
+    "subtitle": "Håll koll på din kaffekonsumtion",
+    "addCoffee": "Lägg till kaffe",
+    "noCoffee": "Inga kaffeanteckningar än. Lägg till en!",
+    "totalToday": "Totalt idag:",
+    "amountLabel": "Mängd",
+    "unitLabel": "Enhet",
+    "recentEntries": "Senaste anteckningar"
+  },
+  "details": {
+    "title": "Kaffedetaljer",
+    "location": "Plats",
+    "locationPlaceholder": "Var drack du detta kaffe?",
+    "rating": "Betyg",
+    "backHome": "Tillbaka till start"
+  },
+  "notifications": {
+    "updateSuccess": "Kaffepost uppdaterades",
+    "updateError": "Kunde inte uppdatera kaffepost",
+    "loadError": "Kunde inte ladda kaffepost",
+    "notFound": "Kaffepost hittades inte"
+  }
+}
