@@ -1,0 +1,33 @@
+{
+  "common": {
+    "appTitle": "Suivi de Café",
+    "save": "Enregistrer les modifications",
+    "back": "Retour",
+    "saving": "Enregistrement...",
+    "language": "Langue",
+    "optional": "optionnel"
+  },
+  "home": {
+    "title": "Suivi de Café",
+    "subtitle": "Suivez votre consommation de café",
+    "addCoffee": "Ajouter un café",
+    "noCoffee": "Pas encore d'entrées de café. Ajoutez-en une !",
+    "totalToday": "Total aujourd'hui :",
+    "amountLabel": "Quantité",
+    "unitLabel": "Unité",
+    "recentEntries": "Entrées récentes"
+  },
+  "details": {
+    "title": "Détails du café",
+    "location": "Lieu",
+    "locationPlaceholder": "Où avez-vous pris ce café ?",
+    "rating": "Évaluation",
+    "backHome": "Retour à l'accueil"
+  },
+  "notifications": {
+    "updateSuccess": "Entrée de café mise à jour avec succès",
+    "updateError": "Échec de la mise à jour de l'entrée de café",
+    "loadError": "Échec du chargement de l'entrée de café",
+    "notFound": "Entrée de café introuvable"
+  }
+}

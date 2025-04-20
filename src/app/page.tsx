@@ -23,8 +23,11 @@ import {
   Rating as MuiRating,
 } from '@mui/material';
 import type { MeasurementSystem, Unit, CoffeeEntry } from '../types/coffee';
+import { useTranslation, useLanguage } from '@/context/LanguageContext';
 
 export default function Home() {
+  const { t } = useTranslation();
+  const { language } = useLanguage();
   const [amount, setAmount] = useState<string>('');
   const [unit, setUnit] = useState<Unit>('cups');
   const [measurementSystem, setMeasurementSystem] = useState<MeasurementSystem>('metric');
@@ -80,7 +83,13 @@ export default function Home() {
   };
 
   const formatDate = (timestamp: string) => {
-    return new Date(timestamp).toLocaleString();
+    // Format date according to the current language
+    return new Date(timestamp).toLocaleString(
+      language === 'en' ? 'en-US' : 
+      language === 'sv' ? 'sv-SE' : 
+      language === 'nl' ? 'nl-NL' : 
+      'fr-FR'
+    );
   };
 
   const formatAmount = (amount: number, unit: Unit) => {
@@ -91,7 +100,10 @@ export default function Home() {
     <Container maxWidth="sm">
       <Box sx={{ my: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom align="center">
-          Coffee Tracker
+          {t('home.title')}
+        </Typography>
+        <Typography variant="subtitle1" align="center" gutterBottom>
+          {t('home.subtitle')}
         </Typography>
         
         <Paper sx={{ p: 3, mb: 3 }}>
@@ -109,7 +121,7 @@ export default function Home() {
 
           <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
             <TextField
-              label="Amount"
+              label={t('home.amountLabel')}
               type="number"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
@@ -117,10 +129,10 @@ export default function Home() {
             />
             
             <FormControl sx={{ minWidth: 120 }}>
-              <InputLabel>Unit</InputLabel>
+              <InputLabel>{t('home.unitLabel')}</InputLabel>
               <Select
                 value={unit}
-                label="Unit"
+                label={t('home.unitLabel')}
                 onChange={(e) => setUnit(e.target.value as Unit)}
               >
                 {measurementSystem === 'metric' ? (
@@ -138,16 +150,16 @@ export default function Home() {
           {/* New fields for rating and location */}
           <Box sx={{ mb: 3 }}>
             <TextField
-              label="Location (optional)"
+              label={t('details.location') + ' (' + t('common.optional') + ')'}
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               fullWidth
-              placeholder="Where did you have this coffee?"
+              placeholder={t('details.locationPlaceholder')}
               sx={{ mb: 2 }}
             />
             
             <Typography component="legend" sx={{ mt: 1 }}>
-              Rating (optional)
+              {t('details.rating')} ({t('common.optional')})
             </Typography>
             <MuiRating
               name="coffee-rating"
@@ -165,13 +177,13 @@ export default function Home() {
             fullWidth
             disabled={!amount}
           >
-            Add Coffee
+            {t('home.addCoffee')}
           </Button>
         </Paper>
 
         <Paper sx={{ p: 3 }}>
           <Typography variant="h6" gutterBottom>
-            Recent Entries
+            {t('home.recentEntries')}
           </Typography>
           <List>
             {entries.map((entry, index) => (
@@ -195,7 +207,7 @@ export default function Home() {
                         {formatDate(entry.timestamp)}
                         {entry.location && (
                           <Typography variant="body2" component="span" display="block">
-                            Location: {entry.location}
+                            {t('details.location')}: {entry.location}
                           </Typography>
                         )}
                       </>
@@ -207,7 +219,7 @@ export default function Home() {
             ))}
             {entries.length === 0 && (
               <ListItem>
-                <ListItemText primary="No entries yet" />
+                <ListItemText primary={t('home.noCoffee')} />
               </ListItem>
             )}
           </List>

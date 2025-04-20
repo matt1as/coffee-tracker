@@ -15,9 +15,12 @@ import {
   Alert,
 } from '@mui/material';
 import { CoffeeEntry } from '@/types/coffee';
+import { useTranslation, useLanguage } from '@/context/LanguageContext';
 
 export default function CoffeeEntryPage({ params }: { params: { id: string } }) {
   const router = useRouter();
+  const { t } = useTranslation();
+  const { language } = useLanguage();
   const [entry, setEntry] = useState<CoffeeEntry | null>(null);
   const [loading, setLoading] = useState(true);
   const [rating, setRating] = useState<number | null>(null);
@@ -48,15 +51,15 @@ export default function CoffeeEntryPage({ params }: { params: { id: string } }) 
         setRating(data.rating || null);
         setLocation(data.location || '');
       } else {
-        showNotification('Coffee entry not found', 'error');
+        showNotification(t('notifications.notFound'), 'error');
       }
     } catch (error) {
       console.error('Error fetching entry:', error);
-      showNotification('Failed to load coffee entry', 'error');
+      showNotification(t('notifications.loadError'), 'error');
     } finally {
       setLoading(false);
     }
-  }, [params.id, showNotification]);
+  }, [params.id, showNotification, t]);
 
   useEffect(() => {
     fetchEntry();
@@ -79,7 +82,7 @@ export default function CoffeeEntryPage({ params }: { params: { id: string } }) 
       if (response.ok) {
         const updatedEntry = await response.json();
         setEntry(updatedEntry);
-        showNotification('Coffee entry updated successfully', 'success');
+        showNotification(t('notifications.updateSuccess'), 'success');
         
         // Delay navigation to allow user to see the success notification
         setTimeout(() => {
@@ -87,11 +90,11 @@ export default function CoffeeEntryPage({ params }: { params: { id: string } }) 
         }, 1500); // 1.5 seconds delay before navigation
       } else {
         const error = await response.json();
-        showNotification(error.error || 'Failed to update coffee entry', 'error');
+        showNotification(error.error || t('notifications.updateError'), 'error');
       }
     } catch (error) {
       console.error('Error updating entry:', error);
-      showNotification('Failed to update coffee entry', 'error');
+      showNotification(t('notifications.updateError'), 'error');
     } finally {
       setSaving(false);
     }
@@ -102,7 +105,13 @@ export default function CoffeeEntryPage({ params }: { params: { id: string } }) 
   };
 
   const formatDate = (timestamp: string) => {
-    return new Date(timestamp).toLocaleString();
+    // Format date according to the current language locale
+    return new Date(timestamp).toLocaleString(
+      language === 'en' ? 'en-US' : 
+      language === 'sv' ? 'sv-SE' : 
+      language === 'nl' ? 'nl-NL' : 
+      'fr-FR'
+    );
   };
 
   if (loading) {
@@ -119,13 +128,13 @@ export default function CoffeeEntryPage({ params }: { params: { id: string } }) 
     return (
       <Container maxWidth="sm">
         <Paper sx={{ p: 3, my: 4 }}>
-          <Typography variant="h6">Coffee entry not found</Typography>
+          <Typography variant="h6">{t('notifications.notFound')}</Typography>
           <Button
             variant="contained"
             onClick={() => router.push('/')}
             sx={{ mt: 2 }}
           >
-            Back to Home
+            {t('details.backHome')}
           </Button>
         </Paper>
       </Container>
@@ -136,7 +145,7 @@ export default function CoffeeEntryPage({ params }: { params: { id: string } }) 
     <Container maxWidth="sm">
       <Box sx={{ my: 4 }}>
         <Typography variant="h4" component="h1" gutterBottom align="center">
-          Coffee Details
+          {t('details.title')}
         </Typography>
 
         <Paper sx={{ p: 3, mb: 3 }}>
@@ -151,16 +160,16 @@ export default function CoffeeEntryPage({ params }: { params: { id: string } }) 
 
           <Box sx={{ mb: 3 }}>
             <TextField
-              label="Location"
+              label={t('details.location')}
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               fullWidth
-              placeholder="Where did you have this coffee?"
+              placeholder={t('details.locationPlaceholder')}
               sx={{ mb: 2 }}
             />
             
             <Typography component="legend" sx={{ mt: 1 }}>
-              Rating
+              {t('details.rating')}
             </Typography>
             <MuiRating
               name="coffee-rating"
@@ -179,14 +188,14 @@ export default function CoffeeEntryPage({ params }: { params: { id: string } }) 
               disabled={saving}
               fullWidth
             >
-              {saving ? 'Saving...' : 'Save Changes'}
+              {saving ? t('common.saving') : t('common.save')}
             </Button>
             <Button
               variant="outlined"
               onClick={() => router.push('/')}
               fullWidth
             >
-              Back
+              {t('common.back')}
             </Button>
           </Box>
         </Paper>
