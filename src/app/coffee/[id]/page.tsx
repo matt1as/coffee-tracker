@@ -1,0 +1,211 @@
+'use client';
+
+import { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import {
+  Container,
+  Paper,
+  Typography,
+  TextField,
+  Button,
+  Box,
+  Rating as MuiRating,
+  CircularProgress,
+  Snackbar,
+  Alert,
+} from '@mui/material';
+import { CoffeeEntry } from '@/types/coffee';
+
+export default function CoffeeEntryPage({ params }: { params: { id: string } }) {
+  const router = useRouter();
+  const [entry, setEntry] = useState<CoffeeEntry | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [rating, setRating] = useState<number | null>(null);
+  const [location, setLocation] = useState<string>('');
+  const [saving, setSaving] = useState(false);
+  const [notification, setNotification] = useState({
+    open: false,
+    message: '',
+    severity: 'success' as 'success' | 'error',
+  });
+
+  const showNotification = useCallback((message: string, severity: 'success' | 'error') => {
+    setNotification({
+      open: true,
+      message,
+      severity,
+    });
+  }, []);
+
+  const fetchEntry = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`/api/coffee/${params.id}`);
+      
+      if (response.ok) {
+        const data = await response.json();
+        setEntry(data);
+        setRating(data.rating || null);
+        setLocation(data.location || '');
+      } else {
+        showNotification('Coffee entry not found', 'error');
+      }
+    } catch (error) {
+      console.error('Error fetching entry:', error);
+      showNotification('Failed to load coffee entry', 'error');
+    } finally {
+      setLoading(false);
+    }
+  }, [params.id, showNotification]);
+
+  useEffect(() => {
+    fetchEntry();
+  }, [fetchEntry]);
+
+  const handleSave = async () => {
+    try {
+      setSaving(true);
+      const response = await fetch(`/api/coffee/${params.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          rating,
+          location,
+        }),
+      });
+
+      if (response.ok) {
+        const updatedEntry = await response.json();
+        setEntry(updatedEntry);
+        showNotification('Coffee entry updated successfully', 'success');
+        
+        // Delay navigation to allow user to see the success notification
+        setTimeout(() => {
+          router.push('/');
+        }, 1500); // 1.5 seconds delay before navigation
+      } else {
+        const error = await response.json();
+        showNotification(error.error || 'Failed to update coffee entry', 'error');
+      }
+    } catch (error) {
+      console.error('Error updating entry:', error);
+      showNotification('Failed to update coffee entry', 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleCloseNotification = () => {
+    setNotification({ ...notification, open: false });
+  };
+
+  const formatDate = (timestamp: string) => {
+    return new Date(timestamp).toLocaleString();
+  };
+
+  if (loading) {
+    return (
+      <Container maxWidth="sm">
+        <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
+          <CircularProgress />
+        </Box>
+      </Container>
+    );
+  }
+
+  if (!entry) {
+    return (
+      <Container maxWidth="sm">
+        <Paper sx={{ p: 3, my: 4 }}>
+          <Typography variant="h6">Coffee entry not found</Typography>
+          <Button
+            variant="contained"
+            onClick={() => router.push('/')}
+            sx={{ mt: 2 }}
+          >
+            Back to Home
+          </Button>
+        </Paper>
+      </Container>
+    );
+  }
+
+  return (
+    <Container maxWidth="sm">
+      <Box sx={{ my: 4 }}>
+        <Typography variant="h4" component="h1" gutterBottom align="center">
+          Coffee Details
+        </Typography>
+
+        <Paper sx={{ p: 3, mb: 3 }}>
+          <Box sx={{ mb: 3 }}>
+            <Typography variant="h6" gutterBottom>
+              {entry.amount} {entry.unit}
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              {formatDate(entry.timestamp)}
+            </Typography>
+          </Box>
+
+          <Box sx={{ mb: 3 }}>
+            <TextField
+              label="Location"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              fullWidth
+              placeholder="Where did you have this coffee?"
+              sx={{ mb: 2 }}
+            />
+            
+            <Typography component="legend" sx={{ mt: 1 }}>
+              Rating
+            </Typography>
+            <MuiRating
+              name="coffee-rating"
+              value={rating}
+              onChange={(_, newValue) => {
+                setRating(newValue);
+              }}
+              sx={{ mt: 0.5 }}
+            />
+          </Box>
+
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            <Button
+              variant="contained"
+              onClick={handleSave}
+              disabled={saving}
+              fullWidth
+            >
+              {saving ? 'Saving...' : 'Save Changes'}
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={() => router.push('/')}
+              fullWidth
+            >
+              Back
+            </Button>
+          </Box>
+        </Paper>
+      </Box>
+
+      <Snackbar
+        open={notification.open}
+        autoHideDuration={6000}
+        onClose={handleCloseNotification}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={handleCloseNotification}
+          severity={notification.severity}
+          sx={{ width: '100%' }}
+        >
+          {notification.message}
+        </Alert>
+      </Snackbar>
+    </Container>
+  );
+}
