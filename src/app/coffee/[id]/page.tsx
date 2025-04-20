@@ -80,6 +80,11 @@ export default function CoffeeEntryPage({ params }: { params: { id: string } }) 
         const updatedEntry = await response.json();
         setEntry(updatedEntry);
         showNotification('Coffee entry updated successfully', 'success');
+        
+        // Delay navigation to allow user to see the success notification
+        setTimeout(() => {
+          router.push('/');
+        }, 1500); // 1.5 seconds delay before navigation
       } else {
         const error = await response.json();
         showNotification(error.error || 'Failed to update coffee entry', 'error');
