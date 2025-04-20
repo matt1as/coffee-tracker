@@ -17,7 +17,7 @@ import {
 import { CoffeeEntry } from '@/types/coffee';
 import { useTranslation, useLanguage } from '@/context/LanguageContext';
 
-export default function CoffeeEntryPage({ params }: { params: { id: string } }) {
+export default function CoffeeEntryPage({ params }: { params: Promise<{ id: string }>}) {
   const router = useRouter();
   const { t } = useTranslation();
   const { language } = useLanguage();
@@ -43,7 +43,8 @@ export default function CoffeeEntryPage({ params }: { params: { id: string } }) 
   const fetchEntry = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/coffee/${params.id}`);
+      const { id } = await params;
+      const response = await fetch(`/api/coffee/${id}`);
       
       if (response.ok) {
         const data = await response.json();
@@ -59,7 +60,7 @@ export default function CoffeeEntryPage({ params }: { params: { id: string } }) 
     } finally {
       setLoading(false);
     }
-  }, [params.id, showNotification, t]);
+  }, [params, showNotification, t]);
 
   useEffect(() => {
     fetchEntry();
@@ -68,7 +69,8 @@ export default function CoffeeEntryPage({ params }: { params: { id: string } }) 
   const handleSave = async () => {
     try {
       setSaving(true);
-      const response = await fetch(`/api/coffee/${params.id}`, {
+      const { id } = await params;
+      const response = await fetch(`/api/coffee/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
