@@ -6,7 +6,9 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 export type Language = 'en' | 'sv' | 'nl' | 'fr';
 
 // Define translation record type
-export type TranslationRecord = Record<string, string | TranslationRecord>;
+export interface TranslationRecord {
+  [key: string]: string | TranslationRecord;
+}
 
 // Define the language context type
 interface LanguageContextType {

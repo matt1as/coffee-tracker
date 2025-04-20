@@ -5,10 +5,11 @@ import { NextRequest, NextResponse } from 'next/server';
 const dynamoDb = DynamoDBDocument.from(new DynamoDB({}));
 const TABLE_NAME = process.env.COFFEE_INTAKE_TABLE || 'CoffeeIntake';
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+
+// Using a different approach for Next.js 15.3.1 route handlers
+export async function GET(request: NextRequest,  { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  
   try {
     const result = await dynamoDb.query({
       TableName: TABLE_NAME,
@@ -18,7 +19,7 @@ export async function GET(
       },
       ExpressionAttributeValues: {
         ':userId': 'default-user', // TODO: Implement user management
-        ':timestamp': params.id,
+        ':timestamp': id,
       },
     });
 
@@ -39,10 +40,9 @@ export async function GET(
   }
 }
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: NextRequest,  { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  
   try {
     const body = await request.json();
     
@@ -86,7 +86,7 @@ export async function PUT(
       TableName: TABLE_NAME,
       Key: {
         userId: 'default-user', // TODO: Implement user management
-        timestamp: params.id,
+        timestamp: id,
       },
       UpdateExpression: updateExpression,
       ExpressionAttributeValues: expressionAttributeValues,
