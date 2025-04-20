@@ -11,7 +11,7 @@ jest.mock('@/context/LanguageContext', () => {
   return {
     ...actual,
     useTranslation: () => ({
-      t: (key: string) => {
+      t: (key: keyof typeof translations) => {
         const translations = {
           'details.title': 'Coffee Details',
           'details.location': 'Location',

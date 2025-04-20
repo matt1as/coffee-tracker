@@ -64,7 +64,7 @@ export default function CoffeeEntryPage({ params }: { params: Promise<{ id: stri
 
   useEffect(() => {
     fetchEntry();
-  }, [params]); // Only depend on params, not on fetchEntry
+  }, [params, fetchEntry]); // Include fetchEntry in the dependencies arraypendency array
 
   const handleSave = async () => {
     try {
