@@ -3,7 +3,6 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import CoffeeEntryPage from '@/app/coffee/[id]/page';
 import { LanguageProvider } from '@/context/LanguageContext';
-import { useRouter } from 'next/navigation';
 
 // Mock the LanguageContext's useTranslation hook
 jest.mock('@/context/LanguageContext', () => {
