@@ -5,11 +5,14 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 // Define supported languages
 export type Language = 'en' | 'sv' | 'nl' | 'fr';
 
+// Define translation record type
+export type TranslationRecord = Record<string, string | TranslationRecord>;
+
 // Define the language context type
 interface LanguageContextType {
   language: Language;
   setLanguage: (language: Language) => void;
-  translations: Record<string, any>;
+  translations: TranslationRecord;
 }
 
 // Create the language context with default values
@@ -26,7 +29,7 @@ interface LanguageProviderProps {
 export const LanguageProvider = ({ children }: LanguageProviderProps) => {
   // Initialize language state from localStorage or default to 'en'
   const [language, setLanguage] = useState<Language>('en');
-  const [translations, setTranslations] = useState<Record<string, any>>({});
+  const [translations, setTranslations] = useState<TranslationRecord>({});
 
   // Load translations for the current language
   useEffect(() => {
@@ -87,17 +90,17 @@ export const useTranslation = () => {
     const parts = key.split('.');
     
     // Navigate through the translations object
-    let value = translations;
+    let value: unknown = translations;
     for (const part of parts) {
-      if (value && typeof value === 'object' && part in value) {
-        value = value[part];
+      if (value && typeof value === 'object' && part in (value as object)) {
+        value = (value as Record<string, unknown>)[part];
       } else {
         // Return the key if translation not found
         return key;
       }
     }
     
-    return value;
+    return value as string;
   };
   
   return { t };

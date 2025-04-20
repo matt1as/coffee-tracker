@@ -19,7 +19,7 @@ const languageOptions: { code: Language; flag: string; name: string }[] = [
 ];
 
 export default function LanguageSelector() {
-  const { language, setLanguage, translations } = useLanguage();
+  const { language, setLanguage } = useLanguage();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
