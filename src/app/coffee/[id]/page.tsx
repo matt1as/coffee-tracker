@@ -60,11 +60,11 @@ export default function CoffeeEntryPage({ params }: { params: Promise<{ id: stri
     } finally {
       setLoading(false);
     }
-  }, [params, showNotification, t]);
+  }, [params, showNotification, t]); // Properly defined dependency array
 
   useEffect(() => {
     fetchEntry();
-  }, [fetchEntry]);
+  }, [params, fetchEntry]); // Include fetchEntry in the dependencies array
 
   const handleSave = async () => {
     try {
